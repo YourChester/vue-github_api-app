@@ -1,29 +1,65 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-toolbar
+      v-if="auth"
+      flat
+    >
+      <v-avatar>
+        <img
+          :src="user.avatar_url"
+          :alt="user.login"
+        >
+      </v-avatar>
+      <v-toolbar-title class="ml-4">{{ user.login }}</v-toolbar-title>
+      <div class="flex-grow-1"></div>
+      <div class="mr-6">Followers: {{user.followers}}</div>
+      <div class="mr-6">Following: {{user.following}}</div>
+      <v-btn
+        depressed
+        color="black"
+        class="white--text"
+        @click="exit"
+      >
+        Выход
+      </v-btn>
+    </v-toolbar>
+
+    <v-content class="main-width">
+      <router-view></router-view>
+    </v-content>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  name: 'App',
+  components: {},
+  data: () => ({
+  }),
+  computed: {
+    ...mapGetters('user', ['auth', 'user'])
+  },
+  methods: {
+    ...mapActions('user', ['logOut']),
+    exit() {
+      this.logOut()
+      this.$router.push('/auth')
     }
+  }
+};
+</script>
+
+<style lang="scss">
+header {
+  flex: none !important;
+}
+
+.main {
+  &-width{
+    width: 1400px;
+    margin: 0 auto;
   }
 }
 </style>
